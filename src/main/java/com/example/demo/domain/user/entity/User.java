@@ -5,13 +5,17 @@ import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.room.entity.Room;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "member")
+@NoArgsConstructor
 public class User extends BaseEntity {
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private final List<Room> rooms = new ArrayList<>();
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false)
@@ -21,11 +25,27 @@ public class User extends BaseEntity {
     private String email;
     @Enumerated(EnumType.STRING)
     private Status status;
-    enum Status{
-        WAIT,ACTIVE,NON_ACTIVE
-    }
-    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
-    private List<Room> rooms = new ArrayList<>();
     @OneToOne(mappedBy = "userId")
     private UserRoom userRoom;
+
+    public User(Integer id, String username, String email) {
+        this.fakerId = id;
+        this.name = username;
+        this.email = email;
+        this.status = setStatus(id);
+    }
+
+    private Status setStatus(Integer id) {
+        if (id <= 30) {
+            return Status.ACTIVE;
+        }
+        if (id <= 60) {
+            return Status.WAIT;
+        }
+        return Status.NON_ACTIVE;
+    }
+
+    enum Status {
+        WAIT, ACTIVE, NON_ACTIVE
+    }
 }
