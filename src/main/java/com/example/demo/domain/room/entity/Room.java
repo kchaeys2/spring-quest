@@ -42,6 +42,10 @@ public class Room extends BaseEntity {
         return new RoomsResponse(id, title, host.getId(), roomType.name(), status.name());
     }
 
+    public boolean checkJoinUserAble() {
+        return roomType.getTotal() > joinUsers.size();
+    }
+
     public RoomResponse createRoomResponse() {
         return new RoomResponse(id, title, host.getId(), roomType.name(), status.name(), createAt.toString(), updateAt.toString());
     }

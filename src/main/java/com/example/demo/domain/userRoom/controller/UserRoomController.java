@@ -15,7 +15,8 @@ public class UserRoomController {
 
     @ResponseBody
     @PostMapping("/attention/{roomId}")
-    public ApiResponse<ApiResponseStatus> joinRoom(@RequestBody RoomRequest roomRequest, @PathVariable int roomId) {
+    public ApiResponse<ApiResponseStatus> joinRoom(@RequestBody RoomRequest roomRequest,
+                                                   @PathVariable int roomId) throws Exception {
 
         userRoomService.joinRoom(roomRequest, roomId);
         return new ApiResponse<>(ApiResponseStatus.SUCCESS);
