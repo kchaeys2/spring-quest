@@ -43,7 +43,7 @@ public class UserController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (Exception e) {
             e.printStackTrace();
-            return new ApiResponse<>(e.getMessage());
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 }
