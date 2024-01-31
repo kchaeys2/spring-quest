@@ -4,9 +4,15 @@ import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table
+@NoArgsConstructor
+@Getter
 public class Room extends BaseEntity {
     @Id
     @GeneratedValue
@@ -17,16 +23,20 @@ public class Room extends BaseEntity {
     @JoinColumn(name = "host")
     private User host;
     @Enumerated(EnumType.STRING)
-
     private RoomType roomType;
-    enum RoomType{
-        SINGLE,DOUBLE
-    }
     @Enumerated(EnumType.STRING)
     private Status status;
-    enum Status{
-        WAIT,PROGRESS,FINISH
+    @OneToMany(mappedBy = "roomId")
+    private List<UserRoom> joinUsers;
+
+    public Room(User user, String roomType, String title) {
+        this.host = user;
+        this.roomType = RoomType.valueOf(roomType);
+        this.title = title;
+        this.status = Status.WAIT;
     }
-    @OneToOne(mappedBy = "roomId")
-    private UserRoom userRoom;
+
+    enum Status {
+        WAIT, PROGRESS, FINISH
+    }
 }
