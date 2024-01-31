@@ -2,6 +2,7 @@ package com.example.demo.domain.user.controller;
 
 import com.example.demo.domain.user.dto.request.InitUserRequest;
 import com.example.demo.domain.user.dto.response.InitUserResponse;
+import com.example.demo.domain.user.dto.response.UserPageResponse;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
@@ -10,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -45,5 +43,10 @@ public class UserController {
             e.printStackTrace();
             return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
+    }
+
+    @GetMapping("/user")
+    public ApiResponse<UserPageResponse> findUsers(@RequestParam int size, @RequestParam int page) {
+        return new ApiResponse<>(userService.findUsers(page, size));
     }
 }

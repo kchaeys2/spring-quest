@@ -3,6 +3,7 @@ package com.example.demo.domain.user.entity;
 
 import com.example.demo.domain.BaseEntity;
 import com.example.demo.domain.room.entity.Room;
+import com.example.demo.domain.user.dto.response.UserResponse;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
@@ -43,6 +44,14 @@ public class User extends BaseEntity {
             return Status.WAIT;
         }
         return Status.NON_ACTIVE;
+    }
+
+    public UserResponse createUserResponse() {
+        return new UserResponse(id, fakerId, name, email, status.name(), createAt.toString(), updateAt.toString());
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     enum Status {
