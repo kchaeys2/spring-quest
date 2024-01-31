@@ -20,5 +20,11 @@ public class UserRoomController {
         userRoomService.joinRoom(roomRequest, roomId);
         return new ApiResponse<>(ApiResponseStatus.SUCCESS);
     }
-
+    @ResponseBody
+    @PostMapping("/out/{roomId}")
+    public ApiResponse<ApiResponseStatus> leaveRoom(@RequestBody RoomRequest roomRequest,
+                                                    @PathVariable int roomId){
+        userRoomService.leaveRoom(roomRequest,roomId);
+        return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+    }
 }

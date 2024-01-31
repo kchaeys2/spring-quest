@@ -26,6 +26,14 @@ public class UserRoomService {
         Room room = roomRepositoy.findById(roomId).get();
         User user = userRepository.findById(roomRequest.getUserId()).get();
 
-        userRoomRepository.save(new UserRoom(room,user,Team.RED));
+        userRoomRepository.save(new UserRoom(room, user, Team.RED));
+    }
+
+    @Transactional
+    public void leaveRoom(RoomRequest roomRequest, int roomId) {
+        Room room = roomRepositoy.findById(roomId).get();
+        User user = userRepository.findById(roomRequest.getUserId()).get();
+
+        userRoomRepository.deleteUserRoomByRoomIdAndUserId(room, user);
     }
 }
