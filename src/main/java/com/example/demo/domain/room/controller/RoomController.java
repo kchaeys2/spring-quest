@@ -2,6 +2,7 @@ package com.example.demo.domain.room.controller;
 
 import com.example.demo.domain.room.dto.request.RoomRequest;
 import com.example.demo.domain.room.dto.response.RoomPageResponse;
+import com.example.demo.domain.room.dto.response.RoomResponse;
 import com.example.demo.domain.room.service.RoomService;
 import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
@@ -24,5 +25,10 @@ public class RoomController {
     @GetMapping("")
     public ApiResponse<RoomPageResponse> findRooms(@RequestParam int size, @RequestParam int page) {
         return new ApiResponse<>(roomService.findRooms(size, page));
+    }
+
+    @GetMapping("/{roomId}")
+    public ApiResponse<RoomResponse> findRoom(@PathVariable int roomId){
+        return new ApiResponse<>(roomService.findRoom(roomId));
     }
 }

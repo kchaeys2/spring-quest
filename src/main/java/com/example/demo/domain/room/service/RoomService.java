@@ -2,6 +2,7 @@ package com.example.demo.domain.room.service;
 
 import com.example.demo.domain.room.dto.request.RoomRequest;
 import com.example.demo.domain.room.dto.response.RoomPageResponse;
+import com.example.demo.domain.room.dto.response.RoomResponse;
 import com.example.demo.domain.room.dto.response.RoomsResponse;
 import com.example.demo.domain.room.entity.Room;
 import com.example.demo.domain.room.repository.RoomRepositoy;
@@ -36,5 +37,10 @@ public class RoomService {
 
         List<RoomsResponse> roomsResponse = roomPage.getContent().stream().map(Room::createRoomsResponse).toList();
         return new RoomPageResponse((int) roomPage.getTotalElements(), roomPage.getTotalPages(), roomsResponse);
+    }
+    public RoomResponse findRoom(int id){
+        Room room = roomRepositoy.findById(id).get();
+
+        return room.createRoomResponse();
     }
 }

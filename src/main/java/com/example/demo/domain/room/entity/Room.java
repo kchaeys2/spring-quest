@@ -1,6 +1,7 @@
 package com.example.demo.domain.room.entity;
 
 import com.example.demo.domain.BaseEntity;
+import com.example.demo.domain.room.dto.response.RoomResponse;
 import com.example.demo.domain.room.dto.response.RoomsResponse;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.userRoom.entity.UserRoom;
@@ -39,6 +40,10 @@ public class Room extends BaseEntity {
 
     public RoomsResponse createRoomsResponse() {
         return new RoomsResponse(id, title, host.getId(), roomType.name(), status.name());
+    }
+
+    public RoomResponse createRoomResponse() {
+        return new RoomResponse(id, title, host.getId(), roomType.name(), status.name(), createAt.toString(), updateAt.toString());
     }
 
     enum Status {
