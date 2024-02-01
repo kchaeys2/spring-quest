@@ -31,9 +31,9 @@ public class Room extends BaseEntity {
     @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
     private List<UserRoom> joinUsers;
 
-    public Room(User user, String roomType, String title) {
+    public Room(User user, RoomType roomType, String title) {
         this.host = user;
-        this.roomType = RoomType.valueOf(roomType);
+        this.roomType = roomType;
         this.title = title;
         this.status = RoomStatus.WAIT;
     }
