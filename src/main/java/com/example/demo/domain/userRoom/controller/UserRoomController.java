@@ -16,10 +16,14 @@ public class UserRoomController {
     @ResponseBody
     @PostMapping("/attention/{roomId}")
     public ApiResponse<ApiResponseStatus> joinRoom(@RequestBody RoomRequest roomRequest,
-                                                   @PathVariable int roomId) throws Exception {
+                                                   @PathVariable int roomId) {
 
-        userRoomService.joinRoom(roomRequest, roomId);
-        return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        try {
+            userRoomService.joinRoom(roomRequest, roomId);
+            return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        }catch (NullPointerException | IllegalArgumentException exception){
+            return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }
     }
     @ResponseBody
     @PostMapping("/out/{roomId}")
