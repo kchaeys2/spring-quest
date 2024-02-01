@@ -21,14 +21,14 @@ public class Room extends BaseEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
     private String title;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host")
     private User host;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
-    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "roomId")
     private List<UserRoom> joinUsers;
 
     public Room(User user, RoomType roomType, String title) {
