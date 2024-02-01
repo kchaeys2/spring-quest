@@ -38,6 +38,10 @@ public class Room extends BaseEntity {
         this.status = RoomStatus.WAIT;
     }
 
+    public void outUser(UserRoom userRoom) {
+        joinUsers.remove(userRoom);
+    }
+
     public RoomsResponse createRoomsResponse() {
         return new RoomsResponse(id, title, host.getId(), roomType.name(), status.name());
     }

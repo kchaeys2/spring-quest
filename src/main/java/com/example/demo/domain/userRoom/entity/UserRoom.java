@@ -26,4 +26,9 @@ public class UserRoom {
         this.userId = user;
         this.team = team;
     }
+
+    public void delete() {
+        roomId.outUser(this);
+        userId.outRoom();
+    }
 }

@@ -69,6 +69,8 @@ public class UserRoomService {
         Room room = roomRepositoy.findById(roomId).get();
         User user = userRepository.findById(roomRequest.getUserId()).get();
 
-        userRoomRepository.deleteUserRoomByRoomIdAndUserId(room, user);
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user);
+        userRoom.delete();
+        userRoomRepository.delete(userRoom);
     }
 }
