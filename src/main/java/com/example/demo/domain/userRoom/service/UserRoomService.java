@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 
 @Service
@@ -52,12 +52,24 @@ public class UserRoomService {
 
 
     @Transactional
-    public void leaveRoom(RoomRequest roomRequest, int roomId) {
-        Room room = roomRepositoy.findById(roomId).get();
-        User user = userRepository.findById(roomRequest.getUserId()).get();
-
-        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user);
-        userRoom.delete();
-        userRoomRepository.delete(userRoom);
+    public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
+        Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+        if (room.getStatus() == RoomStatus.FINISH | room.getStatus() == RoomStatus.PROGRESS){
+            throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
+        }
+        if(room.getHost() == user){
+            List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
+            for(UserRoom userRoom : userRooms){
+                userRoom.delete();
+                userRoomRepository.delete(userRoom);
+            }
+            room.setStatusFinish();
+        }else{
+            UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user)
+                    .orElseThrow(NullPointerException::new);
+            userRoom.delete();
+            userRoomRepository.delete(userRoom);
+        }
     }
 }

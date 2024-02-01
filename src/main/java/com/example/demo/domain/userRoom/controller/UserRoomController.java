@@ -29,7 +29,11 @@ public class UserRoomController {
     @PostMapping("/out/{roomId}")
     public ApiResponse<ApiResponseStatus> leaveRoom(@RequestBody RoomRequest roomRequest,
                                                     @PathVariable int roomId){
-        userRoomService.leaveRoom(roomRequest,roomId);
-        return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        try {
+            userRoomService.leaveRoom(roomRequest,roomId);
+            return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        }catch (NullPointerException exception){
+            return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }
     }
 }
