@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRoomRepository extends JpaRepository<UserRoom,Integer> {
     void deleteUserRoomByRoomIdAndUserId(Room roomId, User userId);
     Integer countUserRoomsByRoomIdAndTeam(Room room, Team team);
+    boolean existsByUserId(User userId);
 }
