@@ -27,8 +27,8 @@ public class Room extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     @Enumerated(EnumType.STRING)
-    private Status status;
-    @OneToMany(mappedBy = "roomId")
+    private RoomStatus roomStatus;
+    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
     private List<UserRoom> joinUsers;
 
     public Room(User user, String roomType, String title) {
@@ -50,7 +50,4 @@ public class Room extends BaseEntity {
         return new RoomResponse(id, title, host.getId(), roomType.name(), status.name(), createAt.toString(), updateAt.toString());
     }
 
-    enum Status {
-        WAIT, PROGRESS, FINISH
-    }
 }
