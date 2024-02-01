@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Table
 @NoArgsConstructor
 public class UserRoom {
-    @Id
-    @GeneratedValue
-    @Column( nullable = false)
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private Integer id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
@@ -21,9 +20,15 @@ public class UserRoom {
     private User userId;
     @Enumerated(EnumType.STRING)
     private Team team;
-    public UserRoom(Room room, User user, Team team){
+
+    public UserRoom(Room room, User user, Team team) {
         this.roomId = room;
         this.userId = user;
         this.team = team;
+    }
+
+    public void delete() {
+        roomId.outUser(this);
+        userId.outRoom();
     }
 }

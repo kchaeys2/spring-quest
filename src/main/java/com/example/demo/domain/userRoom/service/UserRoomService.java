@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 
 @Service
@@ -26,49 +26,50 @@ public class UserRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void joinRoom(RoomRequest roomRequest, int roomId) throws IllegalArgumentException {
-        Optional<Room> roomData = roomRepositoy.findById(roomId);
-        Optional<User> userData = userRepository.findById(roomRequest.getUserId());
-        Room room;
-        User user;
-        if (roomData.isPresent() && userData.isPresent()){
-            room = roomData.get();
-            user = userData.get();
-        }else{
-            throw new NullPointerException();
-        }
+    public void joinRoom(RoomRequest roomRequest, int roomId) {
+        Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
 
-        if (!checkAlreadyJoin(user) && checkUserStatus(user)
-                && checkRoomStatus(room) && room.checkJoinUserAble()){
-            if(checkJoinRedAble(room)){
-                userRoomRepository.save(new UserRoom(room,user,Team.RED));
-            }else{
-                userRoomRepository.save(new UserRoom(room,user,Team.BLUE));
-            }
-        }else{
+        if (!checkConditions(user, room)) {
             throw new IllegalArgumentException();
         }
-    }
-    private boolean checkJoinRedAble(Room room){
-        Integer redAmount = userRoomRepository.countUserRoomsByRoomIdAndTeam(room,Team.RED);
 
+        Team team = (checkJoinRedAble(room)) ? Team.RED : Team.BLUE;
+        userRoomRepository.save(new UserRoom(room, user, team));
+    }
+
+    private boolean checkConditions(User user, Room room) {
+        return !userRoomRepository.existsByUserId(user) &&
+                user.getStatus() == UserStatus.ACTIVE &&
+                room.getStatus() == RoomStatus.WAIT &&
+                room.checkJoinUserAble();
+    }
+
+    private boolean checkJoinRedAble(Room room) {
+        long redAmount = userRoomRepository.countUserRoomsByRoomIdAndTeam(room, Team.RED);
         return room.getRoomType().getRed() > redAmount;
     }
-    private boolean checkRoomStatus(Room room){
-        return room.getStatus() == RoomStatus.WAIT;
-    }
-    private boolean checkUserStatus(User user){
-        return user.getStatus() == UserStatus.ACTIVE;
-    }
-    private boolean checkAlreadyJoin(User user){
-        return userRoomRepository.existsByUserId(user);
-    }
+
 
     @Transactional
-    public void leaveRoom(RoomRequest roomRequest, int roomId) {
-        Room room = roomRepositoy.findById(roomId).get();
-        User user = userRepository.findById(roomRequest.getUserId()).get();
-
-        userRoomRepository.deleteUserRoomByRoomIdAndUserId(room, user);
+    public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
+        Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+        if (room.getStatus() == RoomStatus.FINISH | room.getStatus() == RoomStatus.PROGRESS){
+            throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
+        }
+        if(room.getHost() == user){
+            List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
+            for(UserRoom userRoom : userRooms){
+                userRoom.delete();
+                userRoomRepository.delete(userRoom);
+            }
+            room.setStatusFinish();
+        }else{
+            UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user)
+                    .orElseThrow(NullPointerException::new);
+            userRoom.delete();
+            userRoomRepository.delete(userRoom);
+        }
     }
 }

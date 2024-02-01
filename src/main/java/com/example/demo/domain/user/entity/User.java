@@ -21,7 +21,7 @@ public class User extends BaseEntity {
     private String email;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
-    @OneToOne(mappedBy = "host", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "host")
     private Room room;
     @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL)
     private UserRoom userRoom;
@@ -53,5 +53,9 @@ public class User extends BaseEntity {
 
     public UserStatus getStatus() {
         return status;
+    }
+
+    public void outRoom() {
+        userRoom = null;
     }
 }
