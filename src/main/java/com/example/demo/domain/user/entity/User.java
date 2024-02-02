@@ -60,4 +60,8 @@ public class User extends BaseEntity {
     public void outRoom() {
         userRoom = null;
     }
+
+    public UserRoom getUserRoom() {
+        return userRoom;
+    }
 }
