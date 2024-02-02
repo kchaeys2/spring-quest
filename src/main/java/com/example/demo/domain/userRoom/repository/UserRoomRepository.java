@@ -15,4 +15,5 @@ public interface UserRoomRepository extends JpaRepository<UserRoom,Integer> {
     List<UserRoom> findAllByRoomId(Room roomId);
     Integer countUserRoomsByRoomIdAndTeam(Room room, Team team);
     boolean existsByUserId(User userId);
+    Integer countByRoomId(Room room);
 }

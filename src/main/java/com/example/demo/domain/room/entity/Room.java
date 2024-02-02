@@ -57,4 +57,5 @@ public class Room extends BaseEntity {
         status = RoomStatus.FINISH;
     }
     public void setHost(){ host = null; }
+    public void setStatusProgress(){ status = RoomStatus.PROGRESS; }
 }
