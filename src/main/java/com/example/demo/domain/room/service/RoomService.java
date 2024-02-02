@@ -46,7 +46,8 @@ public class RoomService {
         List<RoomsResponse> roomsResponse = roomPage.getContent().stream().map(Room::createRoomsResponse).toList();
         return new RoomPageResponse((int) roomPage.getTotalElements(), roomPage.getTotalPages(), roomsResponse);
     }
-    public RoomResponse findRoom(int id){
+
+    public RoomResponse findRoom(int id) {
         Room room = roomRepositoy.findById(id).get();
 
         return room.createRoomResponse();

@@ -53,9 +53,16 @@ public class Room extends BaseEntity {
     public RoomResponse createRoomResponse() {
         return new RoomResponse(id, title, host.getId(), roomType.name(), status.name(), createAt.toString(), updateAt.toString());
     }
-    public void setStatusFinish(){
+
+    public void setStatusFinish() {
         status = RoomStatus.FINISH;
     }
-    public void setHost(){ host = null; }
-    public void setStatusProgress(){ status = RoomStatus.PROGRESS; }
+
+    public void setHost() {
+        host = null;
+    }
+
+    public void setStatusProgress() {
+        status = RoomStatus.PROGRESS;
+    }
 }
