@@ -86,24 +86,25 @@ public class UserRoomService {
         userRoomRepository.delete(userRoom);
     }
     @Transactional
-    public void changeTeam(UserIdRequest userIdRequest,int roomId){
+    public void changeTeam(UserIdRequest userIdRequest, int roomId) {
         Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
         User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
-        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room,user)
-                .orElseThrow(EntityNotFoundException::new);
-        Team changeTeam;
-        if (userRoom.getTeam() == Team.RED){
-            changeTeam = Team.BLUE;
-        }else{
-            changeTeam = Team.RED;
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room, user).orElseThrow(EntityNotFoundException::new);
+
+        Team changeTeam = (userRoom.getTeam() == Team.RED) ? Team.BLUE : Team.RED;
+
+        validateTeamChange(room, changeTeam);
+
+        userRoom.setTeam(changeTeam);
+    }
+
+    private void validateTeamChange(Room room, Team changeTeam) {
+        if ((room.getRoomType().getTotal() / 2) == userRoomRepository.countUserRoomsByRoomIdAndTeam(room, changeTeam)) {
+            throw new IllegalStateException("Changing to " + changeTeam + " would make teams unbalanced");
         }
-        if ((room.getRoomType().getTotal()/2) == userRoomRepository.countUserRoomsByRoomIdAndTeam(room,changeTeam)){
-            throw new IllegalStateException();
-        }
-        if(room.getStatus() == RoomStatus.WAIT){
-            userRoom.setTeam(changeTeam);
-        }else{
-            throw new IllegalStateException();
+
+        if (room.getStatus() != RoomStatus.WAIT) {
+            throw new IllegalStateException("Room is not in WAIT status");
         }
     }
 }
