@@ -19,7 +19,7 @@ public class UserRoomController {
                                                    @PathVariable int roomId) {
 
         try {
-            userRoomService.joinRoom(userIdRequest, roomId);
+            userRoomService.joinRoom(userIdRequest.getUserId(), roomId);
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         }catch (NullPointerException | IllegalArgumentException exception){
             return new ApiResponse<>(ApiResponseStatus.WRONG);
