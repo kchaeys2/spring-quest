@@ -55,21 +55,31 @@ public class UserRoomService {
     public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
         User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
-        if (room.getStatus() == RoomStatus.FINISH | room.getStatus() == RoomStatus.PROGRESS){
+        validateRoomStatus(room);
+        if(room.getHost() == user){
+            removeAllUsersAndFinish(room);
+        }else{
+            leaveUserFromRoom(room,user);
+        }
+    }
+    private void validateRoomStatus(Room room) {
+        if (room.getStatus() == RoomStatus.FINISH || room.getStatus() == RoomStatus.PROGRESS) {
             throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
         }
-        if(room.getHost() == user){
-            List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
-            for(UserRoom userRoom : userRooms){
-                userRoom.delete();
-                userRoomRepository.delete(userRoom);
-            }
-            room.setStatusFinish();
-        }else{
-            UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user)
-                    .orElseThrow(NullPointerException::new);
+    }
+    private void removeAllUsersAndFinish(Room room) {
+        List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
+        userRooms.forEach(userRoom -> {
             userRoom.delete();
             userRoomRepository.delete(userRoom);
-        }
+        });
+        room.setHost();
+        room.setStatusFinish();
+    }
+    private void leaveUserFromRoom(Room room, User user) {
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room, user)
+                .orElseThrow(NullPointerException::new);
+        userRoom.delete();
+        userRoomRepository.delete(userRoom);
     }
 }
