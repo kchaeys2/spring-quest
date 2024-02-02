@@ -69,7 +69,7 @@ public class UserRoomService {
             throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
         }
     }
-    private void removeAllUsersAndFinish(Room room) {
+    public void removeAllUsersAndFinish(Room room) {
         List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
         userRooms.forEach(userRoom -> {
             userRoom.delete();
