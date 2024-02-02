@@ -78,7 +78,7 @@ public class UserRoomService {
             userRoom.delete();
             userRoomRepository.delete(userRoom);
         });
-        room.setHost();
+        room.setHostNull();
         room.setStatusFinish();
     }
 

@@ -61,7 +61,7 @@ public class Room extends BaseEntity {
         status = RoomStatus.FINISH;
     }
 
-    public void setHost() {
+    public void setHostNull() {
         host = null;
     }
 
