@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,7 +29,7 @@ public class Room extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
     @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
-    private List<UserRoom> joinUsers;
+    private final List<UserRoom> joinUsers = new ArrayList<>();
 
     public Room(User user, RoomType roomType, String title) {
         this.host = user;
