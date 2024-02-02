@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.dto.response;
 
+import com.example.demo.domain.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
