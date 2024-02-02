@@ -28,7 +28,7 @@ public class Room extends BaseEntity {
     private RoomType roomType;
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
-    @OneToMany(mappedBy = "roomId")
+    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
     private List<UserRoom> joinUsers;
 
     public Room(User user, RoomType roomType, String title) {
