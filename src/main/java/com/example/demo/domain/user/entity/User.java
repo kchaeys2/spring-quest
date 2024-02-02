@@ -12,16 +12,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "member")
 @NoArgsConstructor
 public class User extends BaseEntity {
-    @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private Integer id;
     private Integer fakerId;
     private String name;
     private String email;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
-    @OneToOne(mappedBy = "host")
+    @OneToOne(mappedBy = "host", cascade = CascadeType.ALL)
     private Room room;
     @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL)
     private UserRoom userRoom;
@@ -44,7 +43,10 @@ public class User extends BaseEntity {
     }
 
     public UserResponse createUserResponse() {
-        return new UserResponse(id, fakerId, name, email, status.name(), createAt.toString(), updateAt.toString());
+        String formattedCreateAt = changeDateFormat(createAt);
+        String formattedUpdateAt = changeDateFormat(updateAt);
+
+        return new UserResponse(id, fakerId, name, email, status, formattedCreateAt, formattedUpdateAt);
     }
 
     public Integer getId() {
@@ -57,5 +59,9 @@ public class User extends BaseEntity {
 
     public void outRoom() {
         userRoom = null;
+    }
+
+    public UserRoom getUserRoom() {
+        return userRoom;
     }
 }

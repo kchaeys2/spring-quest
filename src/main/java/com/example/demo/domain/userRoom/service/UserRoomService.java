@@ -6,10 +6,11 @@ import com.example.demo.domain.room.repository.RoomRepositoy;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.user.entity.UserStatus;
 import com.example.demo.domain.user.repository.UserRepository;
-import com.example.demo.domain.userRoom.dto.request.RoomRequest;
+import com.example.demo.domain.userRoom.dto.request.UserIdRequest;
 import com.example.demo.domain.userRoom.entity.Team;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import com.example.demo.domain.userRoom.repository.UserRoomRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,9 @@ public class UserRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void joinRoom(RoomRequest roomRequest, int roomId) {
+    public void joinRoom(int userId, int roomId) {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
 
         if (!checkConditions(user, room)) {
             throw new IllegalArgumentException();
@@ -52,24 +53,62 @@ public class UserRoomService {
 
 
     @Transactional
-    public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
+    public void leaveRoom(UserIdRequest userIdRequest, int roomId) throws NullPointerException {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
-        if (room.getStatus() == RoomStatus.FINISH | room.getStatus() == RoomStatus.PROGRESS){
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(NullPointerException::new);
+
+        validateRoomStatus(room);
+
+        if (room.getHost() == user) {
+            removeAllUsersAndFinish(room);
+        } else {
+            leaveUserFromRoom(room, user);
+        }
+    }
+
+    private void validateRoomStatus(Room room) {
+        if (room.getStatus() == RoomStatus.FINISH || room.getStatus() == RoomStatus.PROGRESS) {
             throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
         }
-        if(room.getHost() == user){
-            List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
-            for(UserRoom userRoom : userRooms){
-                userRoom.delete();
-                userRoomRepository.delete(userRoom);
-            }
-            room.setStatusFinish();
-        }else{
-            UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId (room, user)
-                    .orElseThrow(NullPointerException::new);
+    }
+
+    public void removeAllUsersAndFinish(Room room) {
+        List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
+        userRooms.forEach(userRoom -> {
             userRoom.delete();
             userRoomRepository.delete(userRoom);
+        });
+        room.setHostNull();
+        room.setStatusFinish();
+    }
+
+    private void leaveUserFromRoom(Room room, User user) {
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room, user)
+                .orElseThrow(NullPointerException::new);
+        userRoom.delete();
+        userRoomRepository.delete(userRoom);
+    }
+
+    @Transactional
+    public void changeTeam(UserIdRequest userIdRequest, int roomId) {
+        Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room, user).orElseThrow(EntityNotFoundException::new);
+
+        Team changeTeam = (userRoom.getTeam() == Team.RED) ? Team.BLUE : Team.RED;
+
+        validateTeamChange(room, changeTeam);
+
+        userRoom.setTeam(changeTeam);
+    }
+
+    private void validateTeamChange(Room room, Team changeTeam) {
+        if ((room.getRoomType().getTotal() / 2) == userRoomRepository.countUserRoomsByRoomIdAndTeam(room, changeTeam)) {
+            throw new IllegalStateException("Changing to " + changeTeam + " would make teams unbalanced");
+        }
+
+        if (room.getStatus() != RoomStatus.WAIT) {
+            throw new IllegalStateException("Room is not in WAIT status");
         }
     }
 }

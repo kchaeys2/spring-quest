@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.service;
 
+import com.example.demo.domain.room.repository.RoomRepositoy;
 import com.example.demo.domain.user.dto.response.InitUserResponse.UserData;
 import com.example.demo.domain.user.dto.response.UserPageResponse;
 import com.example.demo.domain.user.dto.response.UserResponse;
@@ -19,22 +20,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RoomRepositoy roomRepositoy;
 
     @Transactional
     public void saveUser(List<UserData> userDatas) {
         userRepository.deleteAll();
+        roomRepositoy.deleteAll();
 
         userDatas.stream().map(userData -> new User(userData.getId(), userData.getUsername(), userData.getEmail()))
                 .forEach(userRepository::save);
     }
 
-    public UserPageResponse findUsers(int page, int size){
+    public UserPageResponse findUsers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> userPage = userRepository.findAll(pageable);
 
         List<UserResponse> userResponses = userPage.getContent().stream()
                 .map(User::createUserResponse)
                 .toList();
-        return new UserPageResponse((int) userPage.getTotalElements(),userPage.getTotalPages(),userResponses);
+        return new UserPageResponse((int) userPage.getTotalElements(), userPage.getTotalPages(), userResponses);
     }
 }

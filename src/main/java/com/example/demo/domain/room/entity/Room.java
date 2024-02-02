@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,20 +17,19 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class Room extends BaseEntity {
-    @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private Integer id;
     private String title;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "host")
+    @JoinColumn
     private User host;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
     @Enumerated(EnumType.STRING)
     private RoomStatus status;
-    @OneToMany(mappedBy = "roomId")
-    private List<UserRoom> joinUsers;
+    @OneToMany(mappedBy = "roomId", cascade = CascadeType.ALL)
+    private final List<UserRoom> joinUsers = new ArrayList<>();
 
     public Room(User user, RoomType roomType, String title) {
         this.host = user;
@@ -43,7 +43,7 @@ public class Room extends BaseEntity {
     }
 
     public RoomsResponse createRoomsResponse() {
-        return new RoomsResponse(id, title, host.getId(), roomType.name(), status.name());
+        return new RoomsResponse(id, title, host.getId(), roomType, status);
     }
 
     public boolean checkJoinUserAble() {
@@ -51,9 +51,22 @@ public class Room extends BaseEntity {
     }
 
     public RoomResponse createRoomResponse() {
-        return new RoomResponse(id, title, host.getId(), roomType.name(), status.name(), createAt.toString(), updateAt.toString());
+        String formattedCreateAt = changeDateFormat(createAt);
+        String formattedUpdateAt = changeDateFormat(updateAt);
+        int hostId = host.getId();
+
+        return new RoomResponse(id, title, hostId, roomType, status, formattedCreateAt, formattedUpdateAt);
     }
-    public void setStatusFinish(){
+
+    public void setStatusFinish() {
         status = RoomStatus.FINISH;
+    }
+
+    public void setHostNull() {
+        host = null;
+    }
+
+    public void setStatusProgress() {
+        status = RoomStatus.PROGRESS;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.demo.domain.user.dto.response;
 
+import com.example.demo.domain.user.entity.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +11,7 @@ public class UserResponse {
     private int fakerId;
     private String name;
     private String email;
-    private String status;
+    private UserStatus status;
     private String createdAt;
     private String updatedAt;
 }
