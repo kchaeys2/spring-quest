@@ -6,7 +6,7 @@ import com.example.demo.domain.room.repository.RoomRepositoy;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.user.entity.UserStatus;
 import com.example.demo.domain.user.repository.UserRepository;
-import com.example.demo.domain.userRoom.dto.request.RoomRequest;
+import com.example.demo.domain.userRoom.dto.request.UserIdRequest;
 import com.example.demo.domain.userRoom.entity.Team;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import com.example.demo.domain.userRoom.repository.UserRoomRepository;
@@ -26,9 +26,9 @@ public class UserRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void joinRoom(RoomRequest roomRequest, int roomId) {
+    public void joinRoom(UserIdRequest userIdRequest, int roomId) {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(NullPointerException::new);
 
         if (!checkConditions(user, room)) {
             throw new IllegalArgumentException();
@@ -52,9 +52,9 @@ public class UserRoomService {
 
 
     @Transactional
-    public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
+    public void leaveRoom(UserIdRequest userIdRequest, int roomId) throws NullPointerException {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(NullPointerException::new);
 
         validateRoomStatus(room);
 
