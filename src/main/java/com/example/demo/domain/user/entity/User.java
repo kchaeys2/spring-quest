@@ -12,9 +12,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "member")
 @NoArgsConstructor
 public class User extends BaseEntity {
-    @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private Integer id;
     private Integer fakerId;
     private String name;

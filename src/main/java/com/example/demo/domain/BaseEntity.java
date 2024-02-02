@@ -17,7 +17,7 @@ public class BaseEntity {
     @Column(name = "created_at", nullable = false)
     protected LocalDateTime createAt;
     @LastModifiedDate
-    @Column(name="update_at", nullable = false)
+    @Column(name="updated_at", nullable = false)
     protected LocalDateTime updateAt;
     protected String changeDateFormat(LocalDateTime dateTime){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

@@ -16,13 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class Room extends BaseEntity {
-    @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
+    @Id @GeneratedValue
+    @Column(nullable = false)
     private Integer id;
     private String title;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "host")
+    @JoinColumn
     private User host;
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
