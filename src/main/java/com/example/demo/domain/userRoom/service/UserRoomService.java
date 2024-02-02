@@ -10,6 +10,7 @@ import com.example.demo.domain.userRoom.dto.request.UserIdRequest;
 import com.example.demo.domain.userRoom.entity.Team;
 import com.example.demo.domain.userRoom.entity.UserRoom;
 import com.example.demo.domain.userRoom.repository.UserRoomRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,5 +84,26 @@ public class UserRoomService {
                 .orElseThrow(NullPointerException::new);
         userRoom.delete();
         userRoomRepository.delete(userRoom);
+    }
+    @Transactional
+    public void changeTeam(UserIdRequest userIdRequest,int roomId){
+        Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
+        UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room,user)
+                .orElseThrow(EntityNotFoundException::new);
+        Team changeTeam;
+        if (userRoom.getTeam() == Team.RED){
+            changeTeam = Team.BLUE;
+        }else{
+            changeTeam = Team.RED;
+        }
+        if ((room.getRoomType().getTotal()/2) == userRoomRepository.countUserRoomsByRoomIdAndTeam(room,changeTeam)){
+            throw new IllegalStateException();
+        }
+        if(room.getStatus() == RoomStatus.WAIT){
+            userRoom.setTeam(changeTeam);
+        }else{
+            throw new IllegalStateException();
+        }
     }
 }

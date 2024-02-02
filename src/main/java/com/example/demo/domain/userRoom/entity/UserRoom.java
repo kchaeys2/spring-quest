@@ -31,4 +31,10 @@ public class UserRoom {
         roomId.outUser(this);
         userId.outRoom();
     }
+    public Team getTeam(){
+        return team;
+    }
+    public void setTeam(Team team){
+        this.team = team;
+    }
 }
