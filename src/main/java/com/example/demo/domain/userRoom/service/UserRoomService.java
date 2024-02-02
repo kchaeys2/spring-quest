@@ -59,17 +59,19 @@ public class UserRoomService {
 
         validateRoomStatus(room);
 
-        if(room.getHost() == user){
+        if (room.getHost() == user) {
             removeAllUsersAndFinish(room);
-        }else{
-            leaveUserFromRoom(room,user);
+        } else {
+            leaveUserFromRoom(room, user);
         }
     }
+
     private void validateRoomStatus(Room room) {
         if (room.getStatus() == RoomStatus.FINISH || room.getStatus() == RoomStatus.PROGRESS) {
             throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
         }
     }
+
     public void removeAllUsersAndFinish(Room room) {
         List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(room);
         userRooms.forEach(userRoom -> {
@@ -79,12 +81,14 @@ public class UserRoomService {
         room.setHost();
         room.setStatusFinish();
     }
+
     private void leaveUserFromRoom(Room room, User user) {
         UserRoom userRoom = userRoomRepository.findByRoomIdAndUserId(room, user)
                 .orElseThrow(NullPointerException::new);
         userRoom.delete();
         userRoomRepository.delete(userRoom);
     }
+
     @Transactional
     public void changeTeam(UserIdRequest userIdRequest, int roomId) {
         Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
