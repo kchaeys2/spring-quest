@@ -35,7 +35,11 @@ public class RoomController {
 
     @GetMapping("/{roomId}")
     public ApiResponse<RoomResponse> findRoom(@PathVariable int roomId) {
-        return new ApiResponse<>(roomService.findRoom(roomId));
+        try {
+            return new ApiResponse<>(roomService.findRoom(roomId));
+        }catch (EntityNotFoundException exception){
+            return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }
     }
 
     @PutMapping("/start/{roomId}")
