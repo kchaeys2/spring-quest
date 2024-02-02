@@ -42,7 +42,7 @@ public class Room extends BaseEntity {
     }
 
     public RoomsResponse createRoomsResponse() {
-        return new RoomsResponse(id, title, host.getId(), roomType.name(), status.name());
+        return new RoomsResponse(id, title, host.getId(), roomType, status);
     }
 
     public boolean checkJoinUserAble() {

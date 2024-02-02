@@ -10,7 +10,7 @@ public class UserResponse {
     private int fakerId;
     private String name;
     private String email;
-    private String status;
+    private UserStatus status;
     private String createdAt;
     private String updatedAt;
 }
