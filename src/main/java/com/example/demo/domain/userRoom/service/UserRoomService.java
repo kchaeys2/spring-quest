@@ -55,7 +55,9 @@ public class UserRoomService {
     public void leaveRoom(RoomRequest roomRequest, int roomId) throws NullPointerException {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
         User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(NullPointerException::new);
+
         validateRoomStatus(room);
+
         if(room.getHost() == user){
             removeAllUsersAndFinish(room);
         }else{
