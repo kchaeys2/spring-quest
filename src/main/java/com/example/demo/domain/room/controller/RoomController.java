@@ -20,8 +20,12 @@ public class RoomController {
     @ResponseBody
     @PostMapping("")
     public ApiResponse<ApiResponseStatus> saveRoom(@RequestBody RoomRequest roomRequest) {
-        roomService.saveRoom(roomRequest);
-        return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        try {
+            roomService.saveRoom(roomRequest);
+            return new ApiResponse<>(ApiResponseStatus.SUCCESS);
+        }catch (EntityNotFoundException | IllegalStateException exception ){
+            return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }
     }
 
     @GetMapping("")

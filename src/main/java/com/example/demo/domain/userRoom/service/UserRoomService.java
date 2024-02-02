@@ -27,9 +27,9 @@ public class UserRoomService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void joinRoom(UserIdRequest userIdRequest, int roomId) {
+    public void joinRoom(int userId, int roomId) {
         Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(NullPointerException::new);
+        User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
 
         if (!checkConditions(user, room)) {
             throw new IllegalArgumentException();
