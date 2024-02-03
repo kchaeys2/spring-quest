@@ -11,6 +11,4 @@ public class UserPageResponse {
     private int totalElements;
     private int totalPages;
     private List<UserResponse> userList;
-
-
 }

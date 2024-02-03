@@ -8,6 +8,9 @@ import com.example.demo.domain.userRoom.entity.UserRoom;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "member")
 @NoArgsConstructor
@@ -20,8 +23,8 @@ public class User extends BaseEntity {
     private String email;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
-    @OneToOne(mappedBy = "host", cascade = CascadeType.ALL)
-    private Room room;
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
+    private final List<Room> rooms = new ArrayList<>();
     @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL)
     private UserRoom userRoom;
 
@@ -43,8 +46,8 @@ public class User extends BaseEntity {
     }
 
     public UserResponse createUserResponse() {
-        String formattedCreateAt = changeDateFormat(createAt);
-        String formattedUpdateAt = changeDateFormat(updateAt);
+        String formattedCreateAt = changeDateFormat(createdAt);
+        String formattedUpdateAt = changeDateFormat(updatedAt);
 
         return new UserResponse(id, fakerId, name, email, status, formattedCreateAt, formattedUpdateAt);
     }
