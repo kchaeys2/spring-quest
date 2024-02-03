@@ -38,13 +38,19 @@ public class RoomController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
+        } catch (Exception exception){
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 
     @GetMapping("")
     @Operation(summary = "방 전체 조회 API")
     public ApiResponse<RoomPageResponse> findRooms(@RequestParam int size, @RequestParam int page) {
-        return new ApiResponse<>(roomService.findRooms(size, page));
+        try {
+            return new ApiResponse<>(roomService.findRooms(size, page));
+        }catch (Exception exception){
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
+        }
     }
 
     @GetMapping("/{roomId}")
@@ -73,6 +79,8 @@ public class RoomController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (InterruptedException | EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }catch (Exception exception){
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 }

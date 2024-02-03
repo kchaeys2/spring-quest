@@ -39,6 +39,8 @@ public class UserRoomController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (NullPointerException | IllegalArgumentException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
+        } catch (Exception exception) {
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 
@@ -59,6 +61,8 @@ public class UserRoomController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
+        } catch (Exception exception) {
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 }

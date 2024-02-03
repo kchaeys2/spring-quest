@@ -37,6 +37,8 @@ public class TeamController {
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
         } catch (EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
+        }catch (Exception exception){
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
 }

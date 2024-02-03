@@ -52,8 +52,7 @@ public class UserController {
             InitUserResponse myResponse = objectMapper.readValue(responseData, InitUserResponse.class);
             userService.saveUser(myResponse.getData());
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
             return new ApiResponse<>(ApiResponseStatus.FAIL);
         }
     }
@@ -61,6 +60,10 @@ public class UserController {
     @GetMapping("/user")
     @Operation(summary = "유저 전체 조회 API")
     public ApiResponse<UserPageResponse> findUsers(@RequestParam int size, @RequestParam int page) {
-        return new ApiResponse<>(userService.findUsers(page, size));
+        try {
+            return new ApiResponse<>(userService.findUsers(page, size));
+        } catch (Exception e) {
+            return new ApiResponse<>(ApiResponseStatus.FAIL);
+        }
     }
 }
