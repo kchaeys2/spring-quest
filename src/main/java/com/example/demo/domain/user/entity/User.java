@@ -46,8 +46,8 @@ public class User extends BaseEntity {
     }
 
     public UserResponse createUserResponse() {
-        String formattedCreateAt = changeDateFormat(createAt);
-        String formattedUpdateAt = changeDateFormat(updateAt);
+        String formattedCreateAt = changeDateFormat(createdAt);
+        String formattedUpdateAt = changeDateFormat(updatedAt);
 
         return new UserResponse(id, fakerId, name, email, status, formattedCreateAt, formattedUpdateAt);
     }

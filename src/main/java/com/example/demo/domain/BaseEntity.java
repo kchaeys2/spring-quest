@@ -15,10 +15,10 @@ import java.time.format.DateTimeFormatter;
 public class BaseEntity {
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    protected LocalDateTime createAt;
+    protected LocalDateTime createdAt;
     @LastModifiedDate
     @Column(name="updated_at", nullable = false)
-    protected LocalDateTime updateAt;
+    protected LocalDateTime updatedAt;
     protected String changeDateFormat(LocalDateTime dateTime){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
