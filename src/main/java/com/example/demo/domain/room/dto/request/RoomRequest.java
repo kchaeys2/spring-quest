@@ -8,7 +8,7 @@ import lombok.Getter;
 public class RoomRequest {
     @Schema(description = "방 생성하는 유저Id")
     private int userId;
-    @Schema(description = "단식,복식 선택", allowableValues = {"SINGLE", "DOUBLE"})
+    @Schema(description = "단식,복식 선택")
     private RoomType roomType;
     @Schema(description = "방 이름")
     private String title;

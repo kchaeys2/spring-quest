@@ -12,7 +12,6 @@ public class UserResponse {
     private int fakerId;
     private String name;
     private String email;
-    @Schema(allowableValues = {"WAIT", "ACTIVE", "NON_ACTIVE"})
     private UserStatus status;
     @Schema(description = "생성 일자", pattern = "yyyy-MM-dd HH:mm:ss", example = "2024-02-02 15:35:00")
     private String createdAt;
