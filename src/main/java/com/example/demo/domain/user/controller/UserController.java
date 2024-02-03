@@ -7,6 +7,7 @@ import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -23,7 +24,8 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/init")
-    public ApiResponse<String> saveUser(@RequestBody InitUserRequest initUserRequest) {
+    @Operation(summary = "초기화 API", description = "모든 데이터를 삭제하고 외부에서 User를 받아 저장")
+    public ApiResponse<ApiResponseStatus> saveUser(@RequestBody InitUserRequest initUserRequest) {
         OkHttpClient client = new OkHttpClient();
 
         String apiUrl = "https://fakerapi.it/api/v1/users?_seed=" + initUserRequest.getSeed() + "&_quantity=" + initUserRequest.getQuantity() + "&_locale=ko_KR";
@@ -46,6 +48,7 @@ public class UserController {
     }
 
     @GetMapping("/user")
+    @Operation(summary = "유저 전체 조회 API")
     public ApiResponse<UserPageResponse> findUsers(@RequestParam int size, @RequestParam int page) {
         return new ApiResponse<>(userService.findUsers(page, size));
     }
