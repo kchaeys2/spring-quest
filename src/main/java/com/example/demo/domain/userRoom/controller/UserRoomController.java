@@ -6,6 +6,7 @@ import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +39,7 @@ public class UserRoomController {
         try {
             userRoomService.leaveRoom(userIdRequest, roomId);
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
-        } catch (NullPointerException exception) {
+        } catch (EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
         }
     }

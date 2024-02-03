@@ -32,7 +32,7 @@ public class UserRoomService {
         User user = userRepository.findById(userId).orElseThrow(NullPointerException::new);
 
         if (!checkConditions(user, room)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("참가할 수 없습니다.");
         }
 
         Team team = (checkJoinRedAble(room)) ? Team.RED : Team.BLUE;
@@ -53,9 +53,10 @@ public class UserRoomService {
 
 
     @Transactional
-    public void leaveRoom(UserIdRequest userIdRequest, int roomId) throws NullPointerException {
-        Room room = roomRepositoy.findById(roomId).orElseThrow(NullPointerException::new);
-        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(NullPointerException::new);
+    public void leaveRoom(UserIdRequest userIdRequest, int roomId)
+            throws EntityNotFoundException, IllegalStateException {
+        Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
+        User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
 
         validateRoomStatus(room);
 
@@ -68,7 +69,7 @@ public class UserRoomService {
 
     private void validateRoomStatus(Room room) {
         if (room.getStatus() == RoomStatus.FINISH || room.getStatus() == RoomStatus.PROGRESS) {
-            throw new RuntimeException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
+            throw new IllegalStateException("이미 시작(PROGRESS) 상태인 방이거나 끝난(FINISH) 상태의 방은 나갈 수 없습니다");
         }
     }
 
@@ -103,11 +104,11 @@ public class UserRoomService {
 
     private void validateTeamChange(Room room, Team changeTeam) {
         if ((room.getRoomType().getTotal() / 2) == userRoomRepository.countUserRoomsByRoomIdAndTeam(room, changeTeam)) {
-            throw new IllegalStateException("Changing to " + changeTeam + " would make teams unbalanced");
+            throw new IllegalStateException(changeTeam.name() + "팀에 추가 인원이 들어올 수 없습니다.");
         }
 
         if (room.getStatus() != RoomStatus.WAIT) {
-            throw new IllegalStateException("Room is not in WAIT status");
+            throw new IllegalStateException("대기 상태의 방이 아닙니다.");
         }
     }
 }

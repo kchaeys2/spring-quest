@@ -37,7 +37,7 @@ public class RoomService {
 
 
     @Transactional
-    public void saveRoom(RoomRequest roomRequest) {
+    public void saveRoom(RoomRequest roomRequest)throws EntityNotFoundException,IllegalStateException {
         User user = userRepository.findById(roomRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
 
         if(user.getStatus() != UserStatus.ACTIVE | user.getUserRoom() != null){
@@ -63,7 +63,9 @@ public class RoomService {
     }
 
     @Transactional
-    public void startGame(UserIdRequest userIdRequest, int roomId) throws InterruptedException, EntityNotFoundException {
+    public void startGame(UserIdRequest userIdRequest, int roomId)
+            throws InterruptedException, EntityNotFoundException {
+
         Room room = roomRepositoy.findById(roomId).orElseThrow(EntityNotFoundException::new);
         Integer amount = userRoomRepository.countByRoomId(room);
         User user = userRepository.findById(userIdRequest.getUserId()).orElseThrow(EntityNotFoundException::new);
