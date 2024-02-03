@@ -4,7 +4,11 @@ import com.example.demo.domain.userRoom.dto.request.UserIdRequest;
 import com.example.demo.domain.userRoom.service.UserRoomService;
 import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
+import com.example.demo.global.SwaggerExamples;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +23,13 @@ public class TeamController {
 
     @PutMapping("/{roomId}")
     @Operation(summary = "팀 변경 API")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            content = @Content(
+                    schema = @Schema(implementation = ApiResponse.class),
+                    examples = @ExampleObject(value = SwaggerExamples.SUCCESS_RESPONSE)
+            )
+    )
     public ApiResponse<ApiResponseStatus> changeTeam(@RequestBody UserIdRequest userIdRequest,
                                                      @PathVariable int roomId) {
         try {

@@ -6,8 +6,12 @@ import com.example.demo.domain.user.dto.response.UserPageResponse;
 import com.example.demo.domain.user.service.UserService;
 import com.example.demo.global.ApiResponse;
 import com.example.demo.global.ApiResponseStatus;
+import com.example.demo.global.SwaggerExamples;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -25,6 +29,13 @@ public class UserController {
     @ResponseBody
     @PostMapping("/init")
     @Operation(summary = "초기화 API", description = "모든 데이터를 삭제하고 외부에서 User를 받아 저장")
+    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+            responseCode = "200",
+            content = @Content(
+                    schema = @Schema(implementation = ApiResponse.class),
+                    examples = @ExampleObject(value = SwaggerExamples.SUCCESS_RESPONSE)
+            )
+    )
     public ApiResponse<ApiResponseStatus> saveUser(@RequestBody InitUserRequest initUserRequest) {
         OkHttpClient client = new OkHttpClient();
 
