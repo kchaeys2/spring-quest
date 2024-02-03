@@ -21,7 +21,7 @@ public class Room extends BaseEntity {
     @Column(nullable = false)
     private Integer id;
     private String title;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private User host;
     @Enumerated(EnumType.STRING)
@@ -60,10 +60,6 @@ public class Room extends BaseEntity {
 
     public void setStatusFinish() {
         status = RoomStatus.FINISH;
-    }
-
-    public void setHostNull() {
-        host = null;
     }
 
     public void setStatusProgress() {
