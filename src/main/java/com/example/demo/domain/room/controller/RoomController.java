@@ -47,7 +47,7 @@ public class RoomController {
         try {
             roomService.startGame(userIdRequest, roomId);
             return new ApiResponse<>(ApiResponseStatus.SUCCESS);
-        } catch (InterruptedException | EntityNotFoundException exception) {
+        } catch (InterruptedException | EntityNotFoundException | IllegalStateException exception) {
             return new ApiResponse<>(ApiResponseStatus.WRONG);
         }
     }

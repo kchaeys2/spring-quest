@@ -72,6 +72,8 @@ public class RoomService {
                 && Objects.equals(room.getHost(), user)
                 && Objects.equals(room.getRoomType().getTotal(), amount)) {
             room.setStatusProgress();
+        }else{
+            throw new IllegalStateException();
         }
         roomRepositoy.save(room);
 
